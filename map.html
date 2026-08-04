@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location - SheSafe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="map-container">
+
+    <h1>📍 Live Location</h1>
+<div id="loading">
+    <div class="loader"></div>
+    <p>Detecting your location...</p>
+</div>
+
+<div id="loading" style="display:none;">
+    <div class="loader"></div>
+    <p>Detecting your location...</p>
+</div>
+    <div class="location-card">
+        <h3>Safety Status</h3>
+        <p id="status">🔴 Not Sharing Location</p>
+
+        <button class="detect-btn" onclick="getLocation()">
+           📍 Share Live Location
+        </button>
+    </div>
+
+    <div class="map-card">
+        <h3>Current Location</h3>
+
+        <p id="area">
+            Tap the button above to share your location.
+        </p>
+
+        <p id="tracking">
+            Tracking Disabled
+        </p>
+    </div>
+
+    <div class="map-card">
+        <h3>Emergency Status</h3>
+
+        <p>👨‍👩‍👧 Contacts Ready</p>
+
+        <p>🚔 Police Alert Available</p>
+
+        <p>🤖 AI Monitoring Active</p>
+
+    </div>
+
+    <button class="back-btn" onclick="window.location.href='home.html'">
+        Back Home
+    </button>
+
+</div>
+
+<script>
+function getLocation() {
+
+    // Show loading
+    document.getElementById("loading").style.display = "block";
+
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+
+    } else {
+
+        document.getElementById("loading").style.display = "none";
+
+        document.getElementById("status").innerHTML =
+        "❌ Geolocation is not supported.";
+    }
+}
+
+function showPosition(position) {
+    document.getElementById("loading").style.display = "none";
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    document.getElementById("status").innerHTML =
+    "🟢 Live Location Shared Successfully";
+
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+    .then(response => response.json())
+    .then(data => {
+
+        const place =
+        data.address.suburb ||
+        data.address.city ||
+        data.address.town ||
+        data.address.village ||
+        "Unknown Location";
+
+        const state = data.address.state || "";
+
+        document.getElementById("area").innerHTML =
+        "📍 " + place + "<br>" + state;
+
+        document.getElementById("tracking").innerHTML =
+        "🟢 Live Tracking Enabled";
+    });
+
+}
+
+function showError(error) {
+
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            document.getElementById("status").innerHTML =
+            "❌ Location permission denied.";
+            break;
+
+        case error.POSITION_UNAVAILABLE:
+            document.getElementById("status").innerHTML =
+            "❌ Location unavailable.";
+            break;
+
+        case error.TIMEOUT:
+            document.getElementById("status").innerHTML =
+            "❌ Location request timed out.";
+            break;
+
+        default:
+            document.getElementById("status").innerHTML =
+            "❌ Unknown error.";
+    }
+
+}
+</script>
+
+</body>
+</html>

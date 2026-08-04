@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SheSafe - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="home-container">
+
+    <h2>Hello, Ushashi 👋</h2>
+
+    <p class="status">🟢 Status: SAFE</p>
+
+    <!-- SOS Button -->
+    <button class="sos-button" onclick="window.location.href='sos.html'">
+        SOS
+    </button>
+
+    <p class="hold">Tap the button in an emergency</p>
+
+    <!-- AI Assistant -->
+    <div class="ai-card">
+
+        <h3>🤖 AI Safety Assistant</h3>
+
+        <textarea
+            id="userInput"
+            placeholder="Describe your situation..."
+        ></textarea>
+
+        <button class="ai-btn" onclick="getSafetyAdvice()">
+            Analyze Situation
+        </button>
+
+        <div id="aiResponse">
+            AI advice will appear here.
+        </div>
+
+    </div>
+
+    <!-- Feature Cards -->
+
+    <div class="card" onclick="window.location.href='map.html'">
+        📍 Live Location
+    </div>
+
+    <div class="card" onclick="window.location.href='contacts.html'">
+        👨‍👩‍👧 Emergency Contacts
+    </div>
+
+    <div class="card" onclick="window.location.href='police.html'">
+        🚔 Nearby Police Stations
+    </div>
+
+    <div class="card" onclick="window.location.href='settings.html'">
+        ⚙️ Settings
+    </div>
+
+</div>
+
+<script>
+
+async function getSafetyAdvice() {
+
+    const text = document.getElementById("userInput").value;
+
+    if(text.trim() === ""){
+        alert("Please describe your situation.");
+        return;
+    }
+
+    document.getElementById("aiResponse").innerHTML = "🤖 Thinking...";
+
+    const API_KEY = "AQ.Ab8RN6LJUJaLOSbYrimN0lB2fbxirkpwMf_LhUdYcRRNfOKoSA";
+
+    console.log("Sending request...");
+
+const response = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+ API_KEY,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text:
+                                "You are a women's safety assistant. Give short, calm and practical advice for this situation: " + text
+                            }
+                        ]
+                    }
+                ]
+            })
+        }
+    );
+    console.log(response.status);
+    console.log(response);
+
+    const data = await response.json();
+
+console.log(data);
+
+if (!response.ok) {
+    document.getElementById("aiResponse").innerHTML =
+        "❌ API Error: " + JSON.stringify(data);
+    return;
+}
+
+    document.getElementById("aiResponse").innerHTML =
+        data.candidates[0].content.parts[0].text;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Police</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="home-container">
+
+    <h2>🚔 Nearby Police Help</h2>
+
+    <p style="margin:20px 0; color:#555;">
+        Find the nearest police stations based on your current location.
+    </p>
+
+    <button class="ai-btn" onclick="openNearbyPolice()">
+        📍 Find Nearby Police Stations
+    </button>
+
+    <br><br>
+
+    <button class="back-btn"
+        onclick="window.location.href='home.html'">
+        ⬅ Back Home
+    </button>
+
+</div>
+
+<script>
+
+function openNearbyPolice(){
+
+    if(navigator.geolocation){
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position){
+
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                window.open(
+                    `https://www.google.com/maps/search/police+station/@${lat},${lon},15z`,
+                    "_blank"
+                );
+
+            },
+
+            function(){
+
+                alert("Please allow location access.");
+
+            }
+
+        );
+
+    }
+
+    else{
+
+        alert("Geolocation is not supported.");
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
