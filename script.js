@@ -1,17 +1,11 @@
-window.onload = function(){
-
-    setTimeout(function(){
-
-        document.getElementById("loading").style.display="none";
-
-        document.getElementById("content").style.display="block";
-
-        getLocation();
-
-    },2500);
-
-}
-
-setTimeout(function () {
-    window.location.href = "signup.html";
-}, 3000);
+// Splash Screen Handler
+window.onload = function () {
+    setTimeout(function () {
+        const token = localStorage.getItem('shesafe_token');
+        if (token) {
+            window.location.href = 'home.html';
+        } else {
+            window.location.href = 'login.html';
+        }
+    }, 2200);
+};

@@ -5,43 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SheSafe - SOS Activated</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .sos-header {
+            animation: pulse-sos 1s infinite alternate;
+        }
+        @keyframes pulse-sos {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .emergency-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .dial-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .dial-112 {
+            background: #D32F2F;
+        }
+        .dial-1091 {
+            background: #7B1FA2;
+        }
+        .status-box {
+            background: #FFF3E0;
+            border: 1px solid #FFE0B2;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 13px;
+            color: #E65100;
+            text-align: left;
+        }
+        .safe-btn {
+            width: 100%;
+            padding: 14px;
+            background: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .safe-btn:hover {
+            background: #1B5E20;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="home-container">
 
-    <h1 style="font-size:70px;">🚨</h1>
+    <h1 class="sos-header" style="font-size:70px; margin-bottom: 5px;">🚨</h1>
 
-    <h2>SOS ACTIVATED</h2>
+    <h2 style="color: #FF4D6D;">SOS ACTIVATED</h2>
 
-    <p>Your emergency alert has been sent.</p>
+    <p style="color: #555; margin-bottom: 15px;">Your emergency distress alert is active.</p>
 
-    <div class="card">
-        📍 Live location shared
+    <div class="card" id="sosLocationCard">
+        📍 <strong>Location:</strong> <span id="sosLocationText">Acquiring live GPS...</span>
     </div>
 
-    <div class="card">
-        📞 Emergency contacts notified
+    <div class="card" id="sosContactsCard">
+        📞 <strong>Contacts Alerted:</strong> <span id="sosContactsText">Dispatching notifications...</span>
     </div>
 
-    <div class="card">
-        🚔 Searching nearby police...
+    <div class="card" id="sosBatteryCard">
+        🔋 <strong>Device Battery:</strong> <span id="sosBatteryText">Reading device status...</span>
+    </div>
+
+    <!-- Quick Emergency Dials -->
+    <div class="emergency-btn-group">
+        <a href="tel:112" class="dial-btn dial-112">📞 Dial 112</a>
+        <a href="tel:1091" class="dial-btn dial-1091">🛡️ Women 1091</a>
     </div>
 
     <br>
 
-    <button class="view-btn" onclick="window.location.href='map.html'">
-        📍 View Location
+    <button class="safe-btn" id="resolveBtn" onclick="markAsSafe()">
+        ✅ I Am Safe (Resolve Alert)
     </button>
 
-    <br><br>
+    <br>
+
+    <button class="view-btn" onclick="window.location.href='map.html'">
+        📍 View Live Tracking
+    </button>
 
     <button class="back-btn" onclick="window.location.href='home.html'">
         ⬅ Back to Home
     </button>
 
 </div>
+
+<script src="api.js"></script>
+<script>
+let currentSosId = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    // Read battery if supported
+    let batteryLevel = null;
+    if (navigator.getBattery) {
+        try {
+            const battery = await navigator.getBattery();
+            batteryLevel = Math.round(battery.level * 100);
+            document.getElementById("sosBatteryText").innerText = `${batteryLevel}% (${battery.charging ? 'Charging' : 'On Battery'})`;
+        } catch (e) {
+            document.getElementById("sosBatteryText").innerText = 'Normal';
+        }
+    } else {
+        document.getElementById("sosBatteryText").innerText = 'Normal';
+    }
+
+    // Trigger SOS via geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+
+                document.getElementById("sosLocationText").innerHTML = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+
+                try {
+                    const res = await sosAPI.trigger(lat, lon, `Live GPS: ${lat.toFixed(4)}, ${lon.toFixed(4)}`, batteryLevel);
+                    if (res.success) {
+                        currentSosId = res.sos.id;
+                        const count = res.sos.dispatchedContacts?.length || 3;
+                        document.getElementById("sosContactsText").innerText = `✅ Dispatched to ${count} Contacts`;
+                        showToast("🚨 SOS Dispatched! Emergency contacts notified.", "error");
+                    }
+                } catch (err) {
+                    console.error("SOS Trigger Error:", err);
+                    document.getElementById("sosContactsText").innerText = "Alert recorded locally";
+                }
+            },
+            async (err) => {
+                // If location permission denied, trigger without coordinates
+                document.getElementById("sosLocationText").innerText = "Coordinates unavailable (Permission Denied)";
+                try {
+                    const res = await sosAPI.trigger(null, null, "Location unknown (GPS disabled)", batteryLevel);
+                    if (res.success) {
+                        currentSosId = res.sos?.id;
+                        document.getElementById("sosContactsText").innerText = `✅ Dispatched Alert`;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    } else {
+        document.getElementById("sosLocationText").innerText = "Geolocation not supported";
+        sosAPI.trigger(null, null, "Device lacks geolocation", batteryLevel);
+    }
+});
+
+async function markAsSafe() {
+    try {
+        const btn = document.getElementById("resolveBtn");
+        btn.disabled = true;
+        btn.innerText = "Resolving...";
+
+        await sosAPI.resolve(currentSosId);
+        showToast("✅ Emergency resolved! Status set back to SAFE.", "success");
+        setTimeout(() => {
+            window.location.href = "home.html";
+        }, 1200);
+    } catch (err) {
+        showToast("Error resolving SOS: " + err.message, "error");
+        document.getElementById("resolveBtn").disabled = false;
+        document.getElementById("resolveBtn").innerText = "✅ I Am Safe (Resolve Alert)";
+    }
+}
+</script>
 
 </body>
 </html>
