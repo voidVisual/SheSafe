@@ -5,288 +5,155 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emergency Contacts - SheSafe</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .contact-item {
-            background: #f8f8f8;
-            padding: 14px;
-            border-radius: 12px;
-            margin: 12px 0;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #6A5AE0;
-        }
-        .contact-item.primary {
-            border-left-color: #FF4D6D;
-            background: #FFF5F7;
-        }
-        .contact-info h3 {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .primary-badge {
-            font-size: 10px;
-            background: #FF4D6D;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-        .contact-info p {
-            font-size: 13px;
-            color: #666;
-            margin: 0;
-        }
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #999;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 6px;
-            transition: color 0.2s;
-        }
-        .delete-btn:hover {
-            color: #EF4444;
-            background: #fee2e2;
-        }
-        /* Add Contact Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-        .modal-content {
-            background: white;
-            width: 340px;
-            padding: 25px;
-            border-radius: 18px;
-            text-align: left;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .modal-content h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        .modal-content input, .modal-content select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .modal-actions button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .save-btn {
-            background: #6A5AE0;
-            color: white;
-        }
-        .cancel-btn {
-            background: #eee;
-            color: #333;
-        }
-        .loading-text {
-            color: #888;
-            font-size: 14px;
-            margin: 20px 0;
-        }
-    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
+    <main class="app-container">
+        <div class="page-header justify-between">
+            <h1 class="page-title flex items-center gap-2"><i data-lucide="users"></i> Emergency Contacts</h1>
+            <button class="icon-btn" onclick="window.location.href='home.html'"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
 
-<div class="home-container">
+        <div class="p-6">
+            <p class="text-sm text-muted mb-6">
+                These contacts will receive immediate SMS alerts with your live location when SOS is triggered.
+            </p>
 
-    <h2>👨‍👩‍👧 Emergency Contacts</h2>
-    <p style="font-size: 13px; color: #666; margin: 10px 0 15px 0;">
-        These contacts will receive immediate SMS alerts with your live location when SOS is triggered.
-    </p>
+            <div id="contactsList">
+                <div class="text-center text-muted text-sm my-6">Loading contacts...</div>
+            </div>
 
-    <div id="contactsList">
-        <div class="loading-text">Loading contacts...</div>
-    </div>
+            <button class="btn btn-outline mt-4 flex items-center justify-center gap-2" style="color: var(--primary); border-color: var(--primary);" onclick="openAddModal()">
+                <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Add New Contact
+            </button>
+        </div>
+    </main>
 
-    <button class="ai-btn" onclick="openAddModal()">
-        ➕ Add New Contact
-    </button>
+    <!-- Modal for Adding New Contact -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h3 class="mb-4">Add Emergency Contact</h3>
+            <div class="input-group mb-2">
+                <input type="text" id="newContactName" class="input-control" placeholder="Full Name (e.g. Mom, Sarah)" required>
+            </div>
+            <div class="input-group mb-2">
+                <input type="tel" id="newContactPhone" class="input-control" placeholder="Phone Number (+91 ...)" required>
+            </div>
+            <div class="input-group mb-2">
+                <select id="newContactRelation" class="input-control">
+                    <option value="Mother">Mother</option>
+                    <option value="Father">Father</option>
+                    <option value="Sister">Sister</option>
+                    <option value="Brother">Brother</option>
+                    <option value="Friend">Friend</option>
+                    <option value="Guardian">Guardian</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="input-group mb-4">
+                <input type="email" id="newContactEmail" class="input-control" placeholder="Email Address (Optional)">
+            </div>
+            
+            <label class="flex items-center gap-2 mb-6 text-sm">
+                <input type="checkbox" id="newContactPrimary"> 
+                <span class="text-muted">Set as primary emergency contact</span>
+            </label>
 
-    <br><br>
-
-    <button class="back-btn" onclick="window.location.href='home.html'">
-        ⬅ Back Home
-    </button>
-
-</div>
-
-<!-- Modal for Adding New Contact -->
-<div id="addModal" class="modal">
-    <div class="modal-content">
-        <h3>Add Emergency Contact</h3>
-        <input type="text" id="newContactName" placeholder="Full Name (e.g. Mom, Sarah)" required>
-        <input type="tel" id="newContactPhone" placeholder="Phone Number (+91 ...)" required>
-        <select id="newContactRelation">
-            <option value="Mother">Mother</option>
-            <option value="Father">Father</option>
-            <option value="Sister">Sister</option>
-            <option value="Brother">Brother</option>
-            <option value="Friend">Friend</option>
-            <option value="Guardian">Guardian</option>
-            <option value="Other">Other</option>
-        </select>
-        <input type="email" id="newContactEmail" placeholder="Email Address (Optional)">
-        
-        <label style="font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; margin-bottom: 15px;">
-            <input type="checkbox" id="newContactPrimary" style="width: auto; margin: 0;"> Set as primary emergency contact
-        </label>
-
-        <div class="modal-actions">
-            <button class="cancel-btn" onclick="closeAddModal()">Cancel</button>
-            <button class="save-btn" id="saveContactBtn" onclick="saveNewContact()">Save Contact</button>
+            <div class="flex gap-4">
+                <button class="btn btn-outline flex-1" onclick="closeAddModal()">Cancel</button>
+                <button class="btn btn-primary flex-1" id="saveContactBtn" onclick="saveNewContact()">Save</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script src="api.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    loadContacts();
-});
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => { loadContacts(); });
 
-async function loadContacts() {
-    const listDiv = document.getElementById("contactsList");
-    try {
-        const data = await contactsAPI.getAll();
-        if (data.success && data.contacts) {
-            renderContacts(data.contacts);
-        } else {
-            listDiv.innerHTML = '<p style="color:gray;">No emergency contacts added yet.</p>';
+        async function loadContacts() {
+            const listDiv = document.getElementById("contactsList");
+            try {
+                const data = await contactsAPI.getAll();
+                if (data.success && data.contacts) { renderContacts(data.contacts); }
+                else { listDiv.innerHTML = '<p class="text-muted text-sm text-center my-6">No emergency contacts added yet.</p>'; }
+            } catch (err) {
+                listDiv.innerHTML = `<p class="text-danger text-sm text-center my-6">Error loading contacts: ${err.message}</p>`;
+            }
         }
-    } catch (err) {
-        listDiv.innerHTML = `<p style="color:red;">Error loading contacts: ${err.message}</p>`;
-    }
-}
 
-function renderContacts(contacts) {
-    const listDiv = document.getElementById("contactsList");
-    if (contacts.length === 0) {
-        listDiv.innerHTML = '<p style="color:gray; margin: 20px 0;">No contacts added yet. Tap "Add New Contact" below.</p>';
-        return;
-    }
+        function renderContacts(contacts) {
+            const listDiv = document.getElementById("contactsList");
+            if (contacts.length === 0) {
+                listDiv.innerHTML = '<p class="text-muted text-sm text-center my-6">No contacts added yet. Tap "Add New Contact" below.</p>';
+                return;
+            }
 
-    const relationIcons = {
-        'mother': '👩',
-        'father': '👨',
-        'sister': '👭',
-        'brother': '👦',
-        'friend': '🤝',
-        'guardian': '🛡️'
-    };
+            const relationIcons = { 'mother':'heart', 'father':'heart', 'sister':'users', 'brother':'users', 'friend':'user-check', 'guardian':'shield' };
 
-    listDiv.innerHTML = contacts.map(c => {
-        const icon = relationIcons[(c.relationship || '').toLowerCase()] || '👤';
-        const isPrimaryClass = c.is_primary ? 'primary' : '';
-        const primaryBadge = c.is_primary ? '<span class="primary-badge">Primary</span>' : '';
+            listDiv.innerHTML = contacts.map(c => {
+                const icon = relationIcons[(c.relationship || '').toLowerCase()] || 'user';
+                const isPrimaryClass = c.is_primary ? 'primary' : '';
+                const primaryBadge = c.is_primary ? '<span class="badge-primary">Primary</span>' : '';
 
-        return `
-            <div class="contact-item ${isPrimaryClass}">
-                <div class="contact-info">
-                    <h3>${icon} ${escapeHtml(c.name)} ${primaryBadge}</h3>
-                    <p>📞 ${escapeHtml(c.phone)} (${escapeHtml(c.relationship)})</p>
-                </div>
-                <button class="delete-btn" onclick="deleteContactItem(${c.id}, '${escapeHtml(c.name)}')" title="Delete contact">
-                    🗑️
-                </button>
-            </div>
-        `;
-    }).join('');
-}
+                return `
+                    <div class="list-item ${isPrimaryClass}">
+                        <div class="list-item-content">
+                            <h3 class="flex items-center gap-2"><i data-lucide="${icon}" style="width: 16px; height: 16px;"></i> ${escapeHtml(c.name)} ${primaryBadge}</h3>
+                            <p>${escapeHtml(c.phone)} (${escapeHtml(c.relationship)})</p>
+                        </div>
+                        <button class="icon-btn" onclick="deleteContactItem(${c.id}, '${escapeHtml(c.name)}')" title="Delete contact"><i data-lucide="trash-2" style="width: 16px; height: 16px; color: var(--danger);"></i></button>
+                    </div>
+                `;
+            }).join('');
+            setTimeout(() => { lucide.createIcons(); }, 0);
+        }
 
-function openAddModal() {
-    document.getElementById("addModal").style.display = "flex";
-    document.getElementById("newContactName").focus();
-}
+        function openAddModal() {
+            document.getElementById("addModal").style.display = "flex";
+            document.getElementById("newContactName").focus();
+        }
 
-function closeAddModal() {
-    document.getElementById("addModal").style.display = "none";
-    document.getElementById("newContactName").value = "";
-    document.getElementById("newContactPhone").value = "";
-    document.getElementById("newContactEmail").value = "";
-    document.getElementById("newContactPrimary").checked = false;
-}
+        function closeAddModal() {
+            document.getElementById("addModal").style.display = "none";
+            document.getElementById("newContactName").value = "";
+            document.getElementById("newContactPhone").value = "";
+            document.getElementById("newContactEmail").value = "";
+            document.getElementById("newContactPrimary").checked = false;
+        }
 
-async function saveNewContact() {
-    const name = document.getElementById("newContactName").value.trim();
-    const phone = document.getElementById("newContactPhone").value.trim();
-    const relation = document.getElementById("newContactRelation").value;
-    const email = document.getElementById("newContactEmail").value.trim();
-    const isPrimary = document.getElementById("newContactPrimary").checked;
-    const saveBtn = document.getElementById("saveContactBtn");
+        async function saveNewContact() {
+            const name = document.getElementById("newContactName").value.trim();
+            const phone = document.getElementById("newContactPhone").value.trim();
+            const relation = document.getElementById("newContactRelation").value;
+            const email = document.getElementById("newContactEmail").value.trim();
+            const isPrimary = document.getElementById("newContactPrimary").checked;
+            const saveBtn = document.getElementById("saveContactBtn");
 
-    if (!name || !phone) {
-        showToast("Please enter contact name and phone number.", "warning");
-        return;
-    }
+            if (!name || !phone) { showToast("Please enter contact name and phone number.", "warning"); return; }
 
-    try {
-        saveBtn.disabled = true;
-        saveBtn.innerText = "Saving...";
+            try {
+                saveBtn.disabled = true; saveBtn.innerText = "Saving...";
+                await contactsAPI.add(name, phone, relation, email);
+                showToast(`Contact "${name}" added!`, "success");
+                closeAddModal(); loadContacts();
+            } catch (err) { showToast(err.message || "Failed to add contact", "error"); }
+            finally { saveBtn.disabled = false; saveBtn.innerText = "Save"; }
+        }
 
-        const res = await contactsAPI.add(name, phone, relation, email);
-        showToast(`Contact "${name}" added!`, "success");
-        closeAddModal();
-        loadContacts();
-    } catch (err) {
-        showToast(err.message || "Failed to add contact", "error");
-    } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerText = "Save Contact";
-    }
-}
+        async function deleteContactItem(id, name) {
+            if (!confirm(`Are you sure you want to remove "${name}" from emergency contacts?`)) return;
+            try {
+                await contactsAPI.delete(id);
+                showToast(`Removed "${name}"`, "info");
+                loadContacts();
+            } catch (err) { showToast("Failed to delete contact: " + err.message, "error"); }
+        }
 
-async function deleteContactItem(id, name) {
-    if (!confirm(`Are you sure you want to remove "${name}" from emergency contacts?`)) {
-        return;
-    }
-
-    try {
-        await contactsAPI.delete(id);
-        showToast(`Removed "${name}"`, "info");
-        loadContacts();
-    } catch (err) {
-        showToast("Failed to delete contact: " + err.message, "error");
-    }
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-</script>
-
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

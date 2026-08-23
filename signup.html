@@ -5,120 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - SheSafe</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <main class="auth-container p-6">
+        <div class="auth-header mt-4">
+            <img src="./logo.jpg" alt="SheSafe Logo" style="width: 72px; height: 72px; border-radius: 18px; margin: 0 auto; display: block; box-shadow: 0 4px 16px rgba(99,102,241,0.2);">
+            <h2 class="mt-4 text-gradient">Create Account</h2>
+            <p class="text-muted text-sm mt-4">Empowerment through uncompromising safety. Join SheSafe today.</p>
+        </div>
 
-<div class="signup-container">
-    <div class="logo" style="text-align: center; margin-bottom: 10px;">🛡️</div>
-    <h1>Create Account</h1>
-    <p>Join SheSafe and stay protected.</p>
+        <div id="serverStatusPill" class="server-status-pill">
+            <i id="statusDot" data-lucide="activity" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+            <span id="statusText">Checking connection...</span>
+        </div>
 
-    <!-- Server Status Indicator -->
-    <div style="text-align: center;">
-        <span id="serverStatusPill" class="server-status-pill">
-            <span id="statusDot">🟢</span> <span id="statusText">Checking Backend Server...</span>
-        </span>
-    </div>
+        <form id="signupForm" onsubmit="handleSignup(event)">
+            <div class="input-group mb-2">
+                <input type="text" id="fullName" class="input-control" placeholder="Full Name" required>
+            </div>
+            <div class="input-group mb-2">
+                <input type="tel" id="phone" class="input-control" placeholder="Phone Number" required>
+            </div>
+            <div class="input-group mb-2">
+                <input type="email" id="email" class="input-control" placeholder="Email Address" required>
+            </div>
+            <div class="input-group mb-2">
+                <input type="password" id="password" class="input-control" placeholder="Password (min 6 chars)" required>
+            </div>
+            <div class="input-group mb-6">
+                <input type="password" id="confirmPassword" class="input-control" placeholder="Confirm Password" required>
+            </div>
 
-    <form id="signupForm" onsubmit="handleSignup(event)">
-        <input type="text" id="fullName" placeholder="Full Name" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
-        <input type="email" id="email" placeholder="Email Address" required>
-        <input type="password" id="password" placeholder="Password (min 6 chars)" required>
-        <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit" id="signupBtn" class="btn btn-primary mb-4">
+                Sign Up
+            </button>
+        </form>
 
-        <button type="submit" id="signupBtn">Sign Up</button>
-    </form>
+        <div class="flex items-center justify-between mb-4 mt-2 text-muted text-sm">
+            <hr style="flex-grow: 1; border: none; border-top: 1px solid var(--border);">
+            <span style="padding: 0 10px;">or</span>
+            <hr style="flex-grow: 1; border: none; border-top: 1px solid var(--border);">
+        </div>
 
-    <h3>──────── OR ────────</h3>
+        <button type="button" class="btn btn-outline mb-6" onclick="window.location.href='login.html'">
+            Go to Demo / Login Page
+        </button>
 
-    <button class="google" type="button" onclick="window.location.href='login.html'">
-        ⚡ Go to Demo / Login Page
-    </button>
+        <p class="text-center text-sm text-muted">
+            Already have an account? 
+            <a href="login.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">Log In</a>
+        </p>
+    </main>
 
-    <p style="margin-top: 25px;">
-        Already have an account?
-        <a href="login.html">Log In</a>
-    </p>
-</div>
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => { checkServer(); });
 
-<script src="api.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    checkServer();
-});
-
-async function checkServer() {
-    const pill = document.getElementById('serverStatusPill');
-    const dot = document.getElementById('statusDot');
-    const txt = document.getElementById('statusText');
-
-    try {
-        const health = await authAPI.checkServerHealth();
-        if (health.online) {
-            pill.className = 'server-status-pill';
-            dot.innerText = '🟢';
-            txt.innerText = 'Backend Online (Port 5000)';
-        } else {
-            pill.className = 'server-status-pill offline';
-            dot.innerText = '⚠️';
-            txt.innerText = 'Server Offline (Demo Mode Available)';
-        }
-    } catch {
-        pill.className = 'server-status-pill offline';
-        dot.innerText = '⚠️';
-        txt.innerText = 'Server Offline (Demo Mode Available)';
-    }
-}
-
-async function handleSignup(e) {
-    e.preventDefault();
-    const fullName = document.getElementById('fullName').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    const btn = document.getElementById('signupBtn');
-
-    if (!fullName || !phone || !email || !password) {
-        showToast('Please fill in all fields.', 'warning');
-        return;
-    }
-
-    if (password !== confirmPassword) {
-        showToast('Passwords do not match.', 'error');
-        return;
-    }
-
-    if (password.length < 6) {
-        showToast('Password must be at least 6 characters.', 'warning');
-        return;
-    }
-
-    try {
-        btn.disabled = true;
-        btn.innerText = 'Creating account...';
-
-        const data = await authAPI.signup(fullName, phone, email, password, confirmPassword);
-        const name = data.user?.name || fullName;
-        
-        if (data.offline) {
-            showToast(`Account created locally! Welcome, ${name}`, 'info');
-        } else {
-            showToast(`Account created successfully! Welcome, ${name}`, 'success');
+        async function checkServer() {
+            const pill = document.getElementById('serverStatusPill');
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            try {
+                const health = await authAPI.checkServerHealth();
+                if (health.online) {
+                    pill.className = 'server-status-pill online';
+                    document.getElementById('statusDot').setAttribute('data-lucide', 'check-circle');
+                    lucide.createIcons();
+                    txt.innerText = 'Secure connection';
+                } else {
+                    pill.className = 'server-status-pill offline';
+                    document.getElementById('statusDot').setAttribute('data-lucide', 'alert-triangle');
+                    lucide.createIcons();
+                    txt.innerText = 'Demo mode available';
+                }
+            } catch {
+                pill.className = 'server-status-pill offline';
+                document.getElementById('statusDot').setAttribute('data-lucide', 'alert-triangle');
+                lucide.createIcons();
+                txt.innerText = 'Demo mode available';
+            }
         }
 
-        setTimeout(() => {
-            window.location.href = 'home.html';
-        }, 1000);
-    } catch (err) {
-        showToast(err.message || 'Signup failed. Please try again.', 'error');
-    } finally {
-        btn.disabled = false;
-        btn.innerText = 'Sign Up';
-    }
-}
-</script>
+        async function handleSignup(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const btn = document.getElementById('signupBtn');
 
+            if (!fullName || !phone || !email || !password) { showToast('Please fill in all fields.', 'warning'); return; }
+            if (password !== confirmPassword) { showToast('Passwords do not match.', 'error'); return; }
+            if (password.length < 6) { showToast('Password must be at least 6 characters.', 'warning'); return; }
+
+            try {
+                btn.disabled = true; btn.innerText = 'Creating account...';
+                const data = await authAPI.signup(fullName, phone, email, password, confirmPassword);
+                const name = data.user?.name || fullName;
+                if (data.offline) { showToast(`Account created locally! Welcome, ${name}`, 'info'); }
+                else { showToast(`Account created successfully! Welcome, ${name}`, 'success'); }
+                setTimeout(() => { window.location.href = 'home.html'; }, 1000);
+            } catch (err) {
+                showToast(err.message || 'Signup failed. Please try again.', 'error');
+            } finally {
+                btn.disabled = false; btn.innerText = 'Sign Up';
+            }
+        }
+    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

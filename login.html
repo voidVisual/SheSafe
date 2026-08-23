@@ -4,271 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | SheSafe</title>
-
     <link rel="stylesheet" href="./style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
-<body class="auth-page">
-
-    <main class="auth-container">
-
-        <!-- Logo -->
-        <div class="brand">
-            <div class="brand-logo">🛡️</div>
-            <h1>SheSafe</h1>
-            <p>Your Safety, Our Priority</p>
+<body>
+    <main class="auth-container p-6">
+        <div class="auth-header mt-4">
+            <img src="./logo.jpg" alt="SheSafe Logo" style="width: 72px; height: 72px; border-radius: 18px; margin: 0 auto; display: block; box-shadow: 0 4px 16px rgba(99,102,241,0.2);">
+            <h2 class="mt-4 text-gradient">Welcome Back</h2>
+            <p class="text-muted text-sm mt-4">Fearless freedom, every step of the way. Sign in to stay protected.</p>
         </div>
 
-        <!-- Login Card -->
-        <section class="auth-card">
+        <div id="serverStatusPill" class="server-status-pill">
+            <i id="statusDot" data-lucide="activity" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+            <span id="statusText">Checking connection...</span>
+        </div>
 
-            <h2>Welcome Back 👋</h2>
-            <p class="auth-subtitle">
-                Sign in to stay protected and connected.
-            </p>
-
-            <!-- Backend status -->
-            <div id="serverStatusPill" class="server-status-pill">
-                <span id="statusDot">🟢</span>
-                <span id="statusText">Checking connection...</span>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label for="loginEmail">Email or phone</label>
+                <input type="text" id="loginEmail" class="input-control" placeholder="Enter your email or phone" required>
             </div>
 
-            <form id="loginForm" onsubmit="handleLogin(event)">
-
-                <label for="loginEmail">Email or phone</label>
-                <input
-                    type="text"
-                    id="loginEmail"
-                    placeholder="Enter your email or phone"
-                    required
-                >
-
+            <div class="input-group">
                 <label for="loginPassword">Password</label>
-
                 <div class="password-wrapper">
-                    <input
-                        type="password"
-                        id="loginPassword"
-                        placeholder="Enter your password"
-                        
-                        required
-                    >
-                    <button
-                        type="button"
-                        class="password-toggle"
-                        onclick="togglePassword()"
-                    >
-                        👁
+                    <input type="password" id="loginPassword" class="input-control" placeholder="Enter your password" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i data-lucide="eye" style="width: 20px; height: 20px;"></i>
                     </button>
                 </div>
-
-                <div class="login-options">
-                    <label class="remember">
-                        <input type="checkbox">
-                        <span>Remember me</span>
-                    </label>
-
-                    <a href="#">Forgot password?</a>
-                </div>
-
-                <button type="submit" id="loginBtn" class="primary-btn">
-                    Log In
-                </button>
-
-            </form>
-
-            <div class="divider">
-                <span>or</span>
             </div>
 
-            <button
-                type="button"
-                id="quickDemoBtn"
-                class="demo-btn"
-                onclick="quickDemoLogin()"
-            >
-                ⚡ Try Demo Login
+            <div class="flex items-center justify-between mb-6 text-sm">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox">
+                    <span class="text-muted font-medium">Remember me</span>
+                </label>
+                <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 500;">Forgot password?</a>
+            </div>
+
+            <button type="submit" id="loginBtn" class="btn btn-primary mb-4">
+                Log In
             </button>
+        </form>
 
-            <p class="signup-text">
-                Don't have an account?
-                <a href="signup.html">Create an account</a>
-            </p>
+        <div class="flex items-center justify-between mb-4 mt-4 text-muted text-sm">
+            <hr style="flex-grow: 1; border: none; border-top: 1px solid var(--border);">
+            <span style="padding: 0 10px;">or</span>
+            <hr style="flex-grow: 1; border: none; border-top: 1px solid var(--border);">
+        </div>
 
-        </section>
+        <button type="button" id="quickDemoBtn" class="btn btn-outline mb-6" onclick="quickDemoLogin()">
+            Try Demo Login
+        </button>
 
-        <p class="privacy-note">
-            🔒 Your information is protected and kept private.
+        <p class="text-center text-sm text-muted">
+            Don't have an account? 
+            <a href="signup.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">Create an account</a>
         </p>
-
     </main>
 
     <script src="./api.js"></script>
-
     <script>
-
         /* Already logged in */
-        if (TokenStorage.getToken()) {
-            window.location.href = 'home.html';
-        }
+        if (TokenStorage.getToken()) { window.location.href = 'home.html'; }
 
         /* Backend status */
-        document.addEventListener('DOMContentLoaded', () => {
-            checkServer();
-        });
+        document.addEventListener('DOMContentLoaded', () => { checkServer(); });
 
         async function checkServer() {
-
             const pill = document.getElementById('serverStatusPill');
             const dot = document.getElementById('statusDot');
             const txt = document.getElementById('statusText');
-
             try {
-
                 const health = await authAPI.checkServerHealth();
-
                 if (health.online) {
-
                     pill.className = 'server-status-pill online';
-                    dot.innerText = '🟢';
+                    document.getElementById('statusDot').setAttribute('data-lucide', 'check-circle');
+                    lucide.createIcons();
                     txt.innerText = 'Secure connection';
-
                 } else {
-
                     pill.className = 'server-status-pill offline';
-                    dot.innerText = '⚠️';
+                    document.getElementById('statusDot').setAttribute('data-lucide', 'alert-triangle');
+                    lucide.createIcons();
                     txt.innerText = 'Demo mode available';
-
                 }
-
             } catch {
-
                 pill.className = 'server-status-pill offline';
-                dot.innerText = '⚠️';
+                document.getElementById('statusDot').setAttribute('data-lucide', 'alert-triangle');
+                lucide.createIcons();
                 txt.innerText = 'Demo mode available';
-
             }
         }
 
         /* Login */
         async function handleLogin(e) {
-
             e.preventDefault();
-
-            const emailOrPhone =
-                document.getElementById('loginEmail').value.trim();
-
-            const password =
-                document.getElementById('loginPassword').value;
-
-            const btn =
-                document.getElementById('loginBtn');
-
+            const emailOrPhone = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
             if (!emailOrPhone || !password) {
-                showToast(
-                    'Please enter your email and password.',
-                    'warning'
-                );
+                showToast('Please enter your email and password.', 'warning');
                 return;
             }
-
             try {
-
-                btn.disabled = true;
-                btn.innerText = 'Signing in...';
-
-                const data =
-                    await authAPI.login(emailOrPhone, password);
-
-                const name =
-                    data.user?.name || 'User';
-
-                if (data.offline) {
-
-                    showToast(
-                        `Welcome, ${name}! Demo mode.`,
-                        'info'
-                    );
-
-                } else {
-
-                    showToast(
-                        `Welcome back, ${name}!`,
-                        'success'
-                    );
-
-                }
-
-                setTimeout(() => {
-                    window.location.href = 'home.html';
-                }, 800);
-
+                btn.disabled = true; btn.innerText = 'Signing in...';
+                const data = await authAPI.login(emailOrPhone, password);
+                const name = data.user?.name || 'User';
+                if (data.offline) { showToast(`Welcome, ${name}! Demo mode.`, 'info'); }
+                else { showToast(`Welcome back, ${name}!`, 'success'); }
+                setTimeout(() => { window.location.href = 'home.html'; }, 800);
             } catch (err) {
-
-                showToast(
-                    err.message ||
-                    'Login failed. Please check your credentials.',
-                    'error'
-                );
-
+                showToast(err.message || 'Login failed. Please check your credentials.', 'error');
             } finally {
-
-                btn.disabled = false;
-                btn.innerText = 'Log In';
-
+                btn.disabled = false; btn.innerText = 'Log In';
             }
         }
 
         /* Demo login */
-         async function quickDemoLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const password = document.getElementById('loginPassword').value;
-
-    if (!email || !password) {
-        showToast('Please enter your email and password.', 'warning');
-        return;
-    }
-
-    const btn = document.getElementById('quickDemoBtn');
-
-    try {
-        btn.disabled = true;
-        btn.innerText = 'Signing in...';
-
-        const data = await authAPI.login(email, password);
-
-        const name = data.user?.name || 'User';
-
-        showToast(`Welcome, ${name}!`, 'success');
-
-        setTimeout(() => {
-            window.location.href = 'home.html';
-        }, 600);
-
-    } catch (err) {
-        showToast(
-            err.message || 'Login failed.',
-            'error'
-        );
-    } finally {
-        btn.disabled = false;
-        btn.innerText = '⚡ Try Demo Login';
-    }
-}
+        async function quickDemoLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) {
+                showToast('Please enter your email and password.', 'warning'); return;
+            }
+            const btn = document.getElementById('quickDemoBtn');
+            try {
+                btn.disabled = true; btn.innerText = 'Signing in...';
+                const data = await authAPI.login(email, password);
+                const name = data.user?.name || 'User';
+                showToast(`Welcome, ${name}!`, 'success');
+                setTimeout(() => { window.location.href = 'home.html'; }, 600);
+            } catch (err) {
+                showToast(err.message || 'Login failed.', 'error');
+            } finally {
+                btn.disabled = false; btn.innerText = '⚡ Try Demo Login';
+            }
+        }
 
         /* Show/hide password */
         function togglePassword() {
-
-            const input =
-                document.getElementById('loginPassword');
-
-            input.type =
-                input.type === 'password'
-                    ? 'text'
-                    : 'password';
+            const input = document.getElementById('loginPassword');
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
-
     </script>
-
+    <script>lucide.createIcons();</script>
 </body>
 </html>

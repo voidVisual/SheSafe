@@ -3,475 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>SheSafe - Home</title>
-
     <link rel="stylesheet" href="./style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
-<body class="app-page">
-
-    <main class="app-container">
-
+<body>
+    <main class="home-container">
         <!-- Header -->
-        <header class="app-header">
-
+        <header class="home-header">
             <div>
-                <p class="small-label">Welcome back</p>
-                <h1 id="userGreeting">Hello, User 👋</h1>
+                <p class="text-sm text-muted" style="font-weight: 500;">Fearless Freedom, Every Step</p>
+                <h2 id="userGreeting" style="font-size: 22px;">Hello, User</h2>
             </div>
-
-            <button class="profile-button" onclick="window.location.href='settings.html'">
-                👤
+            <button class="profile-btn" onclick="window.location.href='settings.html'">
+                <i data-lucide="user" style="width: 20px; height: 20px;"></i>
             </button>
-
         </header>
 
-
         <!-- Safety Status -->
-        <section class="safety-status" id="statusBadge">
-
-            <div class="status-icon">
-                🛡️
-            </div>
-
+        <div class="status-banner" id="statusBadge">
+            <div class="status-icon"><i data-lucide="shield-check" style="width: 24px; height: 24px;"></i></div>
             <div>
-                <strong>You're Safe</strong>
-                <p>Your safety status is active</p>
+                <strong style="display: block; font-size: 15px;">You're Safe</strong>
+                <p class="text-xs" style="margin-top: 2px; opacity: 0.9;">Your safety status is active</p>
             </div>
+        </div>
 
-            <span class="status-dot">●</span>
-
-        </section>
-
-
-        <!-- Active SOS -->
-        <section id="resolveBanner" class="active-sos-banner">
-
-            <div>
-                <strong>⚠️ SOS Active</strong>
-                <p>Your emergency contacts have been alerted.</p>
+        <!-- Active SOS Banner -->
+        <div id="resolveBanner" class="active-sos-banner">
+            <div class="flex items-center gap-4">
+                <div class="status-icon"><i data-lucide="alert-triangle" style="width: 24px; height: 24px;"></i></div>
+                <div>
+                    <strong style="display: block; font-size: 15px;">SOS Active</strong>
+                    <p class="text-xs" style="margin-top: 2px;">Your emergency contacts have been alerted.</p>
+                </div>
             </div>
+            <button class="btn btn-success" onclick="resolveActiveSOS()">I'm Safe</button>
+        </div>
 
-            <button onclick="resolveActiveSOS()">
-                I'm Safe
-            </button>
-
-        </section>
-
-
-        <!-- SOS -->
+        <!-- SOS Section -->
         <section class="sos-section">
-
-            <p class="section-label">EMERGENCY</p>
-
-            <button
-                class="sos-main-button"
-                id="sosMainBtn"
-                onclick="triggerEmergencySOS()"
-            >
+            <p class="text-xs text-muted font-medium mb-4 uppercase tracking-wide">Emergency</p>
+            <button class="sos-button" id="sosMainBtn" onclick="triggerEmergencySOS()">
                 <span>SOS</span>
-                <small>Emergency</small>
             </button>
-
-            <p class="sos-instruction">
-                Tap SOS if you feel unsafe
-            </p>
-
+            <p class="text-sm text-muted mt-4 text-center">Tap SOS if you feel unsafe</p>
         </section>
-
 
         <!-- Quick Actions -->
-        <section class="quick-actions">
-
-            <div class="section-heading">
-                <h2>Quick Actions</h2>
-            </div>
-
+        <section class="mb-4">
+            <h3 class="px-6 mb-4 text-lg">Quick Actions</h3>
             <div class="action-grid">
-
-                <button
-                    class="action-card location-action"
-                    onclick="window.location.href='map.html'"
-                >
-                    <span class="action-icon">📍</span>
+                <button class="action-card" onclick="window.location.href='map.html'">
+                    <span class="action-icon"><i data-lucide="map-pin"></i></span>
                     <strong>Live Location</strong>
                     <small>Share & track</small>
                 </button>
-
-
-                <button
-                    class="action-card contacts-action"
-                    onclick="window.location.href='contacts.html'"
-                >
-                    <span class="action-icon">👥</span>
-                    <strong>Emergency Contacts</strong>
-                    <small>
-                        <span id="contactsCount">0</span> contacts
-                    </small>
+                <button class="action-card" onclick="window.location.href='contacts.html'">
+                    <span class="action-icon"><i data-lucide="users"></i></span>
+                    <strong>Contacts</strong>
+                    <small><span id="contactsCount">0</span> contacts</small>
                 </button>
-
-
-                <button
-                    class="action-card police-action"
-                    onclick="window.location.href='police.html'"
-                >
-                    <span class="action-icon">🚔</span>
-                    <strong>Police & Helplines</strong>
+                <button class="action-card" onclick="window.location.href='police.html'">
+                    <span class="action-icon"><i data-lucide="phone-call"></i></span>
+                    <strong>Helplines</strong>
                     <small>Get help nearby</small>
                 </button>
-
-
-                <button
-                    class="action-card settings-action"
-                    onclick="window.location.href='settings.html'"
-                >
-                    <span class="action-icon">⚙️</span>
+                <button class="action-card" onclick="window.location.href='settings.html'">
+                    <span class="action-icon"><i data-lucide="settings"></i></span>
                     <strong>Settings</strong>
                     <small>Manage safety</small>
                 </button>
-
             </div>
-
         </section>
-
 
         <!-- AI Assistant -->
-        <section class="ai-assistant-card">
-
+        <section class="ai-card">
             <div class="ai-header">
-
-                <div class="ai-icon">
-                    ✨
-                </div>
-
+                <div class="ai-icon"><i data-lucide="sparkles" style="width: 24px; height: 24px;"></i></div>
                 <div>
-                    <h2>AI Safety Assistant</h2>
-                    <p>Need advice? I'm here to help.</p>
+                    <h3 class="text-lg">AI Safety Assistant</h3>
+                    <p class="text-xs text-muted mt-2">Need advice? I'm here to help.</p>
                 </div>
-
             </div>
-
-
-            <textarea
-                id="userInput"
-                placeholder="Tell me what's happening..."
-            ></textarea>
-
-
-            <button
-                class="ai-submit-button"
-                id="aiSubmitBtn"
-                onclick="getSafetyAdvice()"
-            >
-                ✨ Get Safety Advice
+            <textarea id="userInput" class="ai-input" placeholder="Tell me what's happening..."></textarea>
+            <button class="btn btn-outline" id="aiSubmitBtn" onclick="getSafetyAdvice()" style="border-color: var(--primary); color: var(--primary);">
+                Get Safety Advice
             </button>
-
-
             <div id="aiResponse" class="ai-response">
-
-                <div id="aiText" class="advice-formatted"></div>
-
+                <div id="aiText"></div>
             </div>
-
         </section>
-
-
-        <!-- Logout -->
-        <button class="logout-button" onclick="handleLogout()">
-            Log out
-        </button>
-
+        
+        <div class="px-6 mb-6">
+            <button class="btn btn-outline" onclick="handleLogout()" style="color: var(--danger); border-color: #fecaca;">
+                Log out
+            </button>
+        </div>
 
         <!-- Bottom Navigation -->
         <nav class="bottom-nav">
-
             <button class="nav-item active">
-                <span>⌂</span>
-                <small>Home</small>
+                <span><i data-lucide="home"></i></span>
+                Home
             </button>
-
-            <button
-                class="nav-item"
-                onclick="window.location.href='map.html'"
-            >
-                <span>📍</span>
-                <small>Location</small>
+            <button class="nav-item" onclick="window.location.href='map.html'">
+                <span><i data-lucide="map"></i></span>
+                Location
             </button>
-
-            <button
-                class="nav-item nav-sos"
-                onclick="triggerEmergencySOS()"
-            >
-                <span>🆘</span>
-                <small>SOS</small>
+            <button class="nav-item nav-sos" onclick="triggerEmergencySOS()">
+                <span><i data-lucide="radio"></i></span>
+                SOS
             </button>
-
-            <button
-                class="nav-item"
-                onclick="window.location.href='contacts.html'"
-            >
-                <span>👥</span>
-                <small>Contacts</small>
+            <button class="nav-item" onclick="window.location.href='contacts.html'">
+                <span><i data-lucide="users"></i></span>
+                Contacts
             </button>
-
-            <button
-                class="nav-item"
-                onclick="window.location.href='settings.html'"
-            >
-                <span>⚙️</span>
-                <small>Settings</small>
+            <button class="nav-item" onclick="window.location.href='settings.html'">
+                <span><i data-lucide="settings"></i></span>
+                Settings
             </button>
-
         </nav>
-
     </main>
 
-
     <script src="./api.js"></script>
-
     <script>
-
-        /* =========================================
-           AUTHENTICATION + PROFILE
-        ========================================= */
-
         document.addEventListener("DOMContentLoaded", async () => {
-
             const token = TokenStorage.getToken();
-
-            if (!token) {
-                window.location.href = "login.html";
-                return;
-            }
-
+            if (!token) { window.location.href = "login.html"; return; }
             try {
-
                 const data = await authAPI.getProfile();
-
                 if (data.success && data.user) {
-
-                    const firstName =
-                        data.user.name
-                            ? data.user.name.split(" ")[0]
-                            : "User";
-
-                    document.getElementById("userGreeting").innerText =
-                        `Hello, ${firstName} 👋`;
-
-                    document.getElementById("contactsCount").innerText =
-                        data.user.emergencyContactsCount || "0";
-
-
-                    if (data.user.hasActiveSOS) {
-                        setEmergencyStatus(true);
-                    }
-
+                    const firstName = data.user.name ? data.user.name.split(" ")[0] : "User";
+                    document.getElementById("userGreeting").innerText = `Hello, ${firstName}`;
+                    document.getElementById("contactsCount").innerText = data.user.emergencyContactsCount || "0";
+                    if (data.user.hasActiveSOS) { setEmergencyStatus(true); }
                 }
-
-            } catch (err) {
-
-                console.warn(
-                    "Profile load error:",
-                    err.message
-                );
-
-            }
-
+            } catch (err) { console.warn("Profile load error:", err.message); }
         });
 
-
-        /* =========================================
-           SAFETY STATUS
-        ========================================= */
-
         function setEmergencyStatus(isEmergency) {
-
-            const badge =
-                document.getElementById("statusBadge");
-
-            const banner =
-                document.getElementById("resolveBanner");
-
-
+            const badge = document.getElementById("statusBadge");
+            const banner = document.getElementById("resolveBanner");
             if (isEmergency) {
-
                 badge.classList.add("emergency");
-
-                badge.querySelector("strong").innerText =
-                    "Emergency Active";
-
-                badge.querySelector("p").innerText =
-                    "Your emergency alert is active.";
-
-                badge.querySelector(".status-icon").innerText =
-                    "🚨";
-
-                badge.querySelector(".status-dot").innerText =
-                    "●";
-
+                badge.querySelector("strong").innerText = "Emergency Active";
+                badge.querySelector("p").innerText = "Your emergency alert is active.";
+                badge.querySelector(".status-icon").innerHTML = '<i data-lucide="alert-octagon" style="width: 24px; height: 24px;"></i>';
                 banner.classList.add("show");
-
+                document.getElementById("sosMainBtn").classList.add("sos-pulse");
             } else {
-
                 badge.classList.remove("emergency");
-
-                badge.querySelector("strong").innerText =
-                    "You're Safe";
-
-                badge.querySelector("p").innerText =
-                    "Your safety status is active.";
-
-                badge.querySelector(".status-icon").innerText =
-                    "🛡️";
-
+                badge.querySelector("strong").innerText = "You're Safe";
+                badge.querySelector("p").innerText = "Your safety status is active.";
+                badge.querySelector(".status-icon").innerHTML = '<i data-lucide="shield-check" style="width: 24px; height: 24px;"></i>';
                 banner.classList.remove("show");
-
+                document.getElementById("sosMainBtn").classList.remove("sos-pulse");
             }
-
+            lucide.createIcons();
         }
 
-
-        /* =========================================
-           SOS
-        ========================================= */
-
-        function triggerEmergencySOS() {
-
-            window.location.href = "sos.html";
-
-        }
-
+        function triggerEmergencySOS() { window.location.href = "sos.html"; }
 
         async function resolveActiveSOS() {
-
             try {
-
                 await sosAPI.resolve();
-
                 setEmergencyStatus(false);
-
-                showToast(
-                    "SOS alert resolved. You are marked safe.",
-                    "success"
-                );
-
-            } catch (err) {
-
-                showToast(
-                    "Failed to resolve SOS: " + err.message,
-                    "error"
-                );
-
-            }
-
+                showToast("SOS alert resolved. You are marked safe.", "success");
+            } catch (err) { showToast("Failed to resolve SOS: " + err.message, "error"); }
         }
-
-
-        /* =========================================
-           LOGOUT
-        ========================================= */
 
         function handleLogout() {
-
-            if (
-                confirm("Are you sure you want to log out?")
-            ) {
-
-                authAPI.logout();
-
-            }
-
+            if (confirm("Are you sure you want to log out?")) { authAPI.logout(); }
         }
-
-
-        /* =========================================
-           AI SAFETY ASSISTANT
-        ========================================= */
 
         async function getSafetyAdvice() {
-
-            const input =
-                document.getElementById("userInput");
-
-            const text =
-                input.value.trim();
-
-            const responseBox =
-                document.getElementById("aiResponse");
-
-            const textBox =
-                document.getElementById("aiText");
-
-            const button =
-                document.getElementById("aiSubmitBtn");
-
-
-            if (!text) {
-
-                showToast(
-                    "Please describe your situation.",
-                    "warning"
-                );
-
-                return;
-
-            }
-
-
+            const input = document.getElementById("userInput");
+            const text = input.value.trim();
+            const responseBox = document.getElementById("aiResponse");
+            const textBox = document.getElementById("aiText");
+            const button = document.getElementById("aiSubmitBtn");
+            if (!text) { showToast("Please describe your situation.", "warning"); return; }
             responseBox.classList.add("show");
-
-            textBox.innerHTML =
-                "<em>✨ Analyzing your situation...</em>";
-
+            textBox.innerHTML = "<em>Analyzing your situation...</em>";
             button.disabled = true;
-
             try {
-
-                const data =
-                    await aiAPI.getAdvice(text);
-
-
+                const data = await aiAPI.getAdvice(text);
                 if (data.success && data.advice) {
-
-                    textBox.innerHTML =
-                        data.advice
-                            .replace(
-                                /\*\*(.*?)\*\*/g,
-                                "<strong>$1</strong>"
-                            )
-                            .replace(
-                                /\n/g,
-                                "<br>"
-                            );
-
+                    textBox.innerHTML = data.advice.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>");
                 } else {
-
-                    textBox.innerText =
-                        "Unable to get advice right now. " +
-                        "If you are in immediate danger, " +
-                        "call 112 or use SOS.";
-
+                    textBox.innerText = "Unable to get advice right now. If you are in immediate danger, call 112 or use SOS.";
                 }
-
             } catch (err) {
-
-                textBox.innerHTML =
-                    `⚠️ <strong>Unable to connect.</strong>
-                    <br><br>
-                    If you are in immediate danger,
-                    move to a crowded/public place,
-                    call 112 or use the SOS button.`;
-
-            } finally {
-
-                button.disabled = false;
-
-            }
-
+                textBox.innerHTML = `<strong>Unable to connect.</strong><br><br>If you are in immediate danger, move to a crowded/public place, call 112 or use the SOS button.`;
+            } finally { button.disabled = false; }
         }
-
     </script>
-
+    <script>lucide.createIcons();</script>
 </body>
 </html>
