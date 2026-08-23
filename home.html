@@ -10,7 +10,7 @@
 <body>
     <main class="home-container">
         <!-- Header -->
-        <header class="home-header">
+        <header class="app-header">
             <div>
                 <p class="text-sm text-muted" style="font-weight: 500;">Fearless Freedom, Every Step</p>
                 <h2 id="userGreeting" style="font-size: 22px;">Hello, User</h2>
@@ -146,13 +146,11 @@
             const badge = document.getElementById("statusBadge");
             const banner = document.getElementById("resolveBanner");
             if (isEmergency) {
-                badge.classList.add("emergency");
-                badge.querySelector("strong").innerText = "Emergency Active";
-                badge.querySelector("p").innerText = "Your emergency alert is active.";
-                badge.querySelector(".status-icon").innerHTML = '<i data-lucide="alert-octagon" style="width: 24px; height: 24px;"></i>';
+                badge.style.display = "none";
                 banner.classList.add("show");
                 document.getElementById("sosMainBtn").classList.add("sos-pulse");
             } else {
+                badge.style.display = "flex";
                 badge.classList.remove("emergency");
                 badge.querySelector("strong").innerText = "You're Safe";
                 badge.querySelector("p").innerText = "Your safety status is active.";
