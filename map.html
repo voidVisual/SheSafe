@@ -5,164 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Location - SheSafe</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .share-link-btn {
-            background: #2563EB;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .share-link-btn:hover {
-            background: #1D4ED8;
-        }
-    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
+    <main class="app-container">
+        <div class="page-header justify-between">
+            <h1 class="page-title flex items-center gap-2"><i data-lucide="map-pin"></i> Live Location</h1>
+            <button class="icon-btn" onclick="window.location.href='home.html'"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
+        </div>
 
-<div class="map-container">
+        <div class="p-6">
+            <div id="loading" class="text-center mb-6" style="display:none;">
+                <div class="loader mb-2"></div>
+                <p class="text-sm text-muted">Detecting your live coordinates...</p>
+            </div>
 
-    <h1>📍 Live Location</h1>
+            <div class="card p-4 mb-4">
+                <h3 class="text-sm mb-2 text-muted uppercase tracking-wide">Safety Status</h3>
+                <p id="status" class="font-medium flex items-center gap-2 mb-4"><i data-lucide="circle-slash" style="color:var(--danger);width:18px;height:18px;"></i> Not Sharing Location</p>
+                <button class="btn btn-primary flex items-center justify-center gap-2" id="trackBtn" onclick="getLocation()">
+                    <i data-lucide="share-2" style="width:18px;height:18px;"></i> Share & Sync Live Location
+                </button>
+            </div>
 
-    <div id="loading" style="display:none;">
-        <div class="loader"></div>
-        <p>Detecting your live coordinates...</p>
-    </div>
+            <div class="card p-4 mb-4">
+                <h3 class="text-sm mb-2 text-muted uppercase tracking-wide">Current Coordinates</h3>
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="action-icon flex items-center justify-center" style="margin:0; width: 40px; height: 40px;">
+                        <i data-lucide="crosshair"></i>
+                    </div>
+                    <div>
+                        <p id="area" class="font-medium text-sm">Tap the button above to share your location.</p>
+                        <p id="tracking" class="text-xs text-muted mt-1">Tracking Disabled</p>
+                    </div>
+                </div>
+                <button id="openMapBtn" class="btn btn-outline w-full" style="display:none; color: var(--primary); border-color: var(--primary);" onclick="openInGoogleMaps()">
+                    Open in Google Maps
+                </button>
+            </div>
 
-    <div class="location-card">
-        <h3>Safety Status</h3>
-        <p id="status">🔴 Not Sharing Location</p>
+            <div class="card p-4">
+                <h3 class="text-sm mb-4 text-muted uppercase tracking-wide">Emergency Systems</h3>
+                <div class="flex flex-col gap-3">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="flex items-center gap-2">Contacts Alert System</span>
+                        <span id="contactsStatus" class="badge-primary">READY</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="flex items-center gap-2">Police Network Link</span>
+                        <span class="badge-primary" style="background:#dcfce7; color:#166534;">AVAILABLE</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="flex items-center gap-2">AI Monitoring</span>
+                        <span class="badge-primary" style="background:#f3e8ff; color:#6b21a8;">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-        <button class="detect-btn" id="trackBtn" onclick="getLocation()">
-           📍 Share & Sync Live Location
-        </button>
-    </div>
+    <script src="api.js"></script>
+    <script>
+        let currentLat = null;
+        let currentLon = null;
 
-    <div class="map-card">
-        <h3>Current Coordinates</h3>
+        function getLocation() {
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("trackBtn").disabled = true;
 
-        <p id="area">
-            Tap the button above to share your location.
-        </p>
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                    enableHighAccuracy: true, timeout: 10000
+                });
+            } else {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("status").innerHTML = "Geolocation is not supported.";
+                document.getElementById("trackBtn").disabled = false;
+            }
+        }
 
-        <p id="tracking">
-            Tracking Disabled
-        </p>
+        async function showPosition(position) {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("trackBtn").disabled = false;
 
-        <button id="openMapBtn" class="share-link-btn" style="display:none;" onclick="openInGoogleMaps()">
-            🗺️ Open in Google Maps
-        </button>
-    </div>
+            currentLat = position.coords.latitude;
+            currentLon = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            const speed = position.coords.speed;
 
-    <div class="map-card">
-        <h3>Emergency Status</h3>
-        <p id="contactsStatus">👨‍👩‍👧 Contacts Ready</p>
-        <p>🚔 Police Alert Available</p>
-        <p>🤖 AI Monitoring Active</p>
-    </div>
+            document.getElementById("status").innerHTML = "Live Location Active & Synced";
+            document.getElementById("tracking").innerHTML = `Accuracy: ±${Math.round(accuracy)}m`;
+            document.getElementById("openMapBtn").style.display = "flex";
 
-    <button class="back-btn" onclick="window.location.href='home.html'">
-        ⬅ Back Home
-    </button>
+            let resolvedAddress = `Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}`;
 
-</div>
+            try {
+                const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${currentLat}&lon=${currentLon}`);
+                const data = await geoRes.json();
+                const place = data.address.suburb || data.address.city || data.address.town || data.address.village || "Current Area";
+                const state = data.address.state || "";
+                resolvedAddress = `${place}, ${state}`;
+                document.getElementById("area").innerHTML = `<strong>${place}</strong><br><span class="text-muted text-xs">${state} (${currentLat.toFixed(4)}, ${currentLon.toFixed(4)})</span>`;
+            } catch (e) {
+                document.getElementById("area").innerHTML = `Coordinates: ${currentLat.toFixed(4)}, ${currentLon.toFixed(4)}`;
+            }
 
-<script src="api.js"></script>
-<script>
-let currentLat = null;
-let currentLon = null;
+            try {
+                await locationAPI.update(currentLat, currentLon, accuracy, speed, resolvedAddress, 'SAFE');
+                showToast("Location synced with SheSafe cloud!", "success");
+            } catch (apiErr) { console.warn("Backend location sync:", apiErr.message); }
+        }
 
-function getLocation() {
-    document.getElementById("loading").style.display = "block";
-    document.getElementById("trackBtn").disabled = true;
+        function showError(error) {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("trackBtn").disabled = false;
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").innerHTML = "Location permission denied.";
+                    showToast("Please allow location access in your browser.", "warning");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").innerHTML = "Location unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").innerHTML = "Location request timed out.";
+                    break;
+                default:
+                    document.getElementById("status").innerHTML = "Location error occurred.";
+            }
+        }
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError, {
-            enableHighAccuracy: true,
-            timeout: 10000
-        });
-    } else {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("status").innerHTML = "❌ Geolocation is not supported.";
-        document.getElementById("trackBtn").disabled = false;
-    }
-}
-
-async function showPosition(position) {
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("trackBtn").disabled = false;
-
-    currentLat = position.coords.latitude;
-    currentLon = position.coords.longitude;
-    const accuracy = position.coords.accuracy;
-    const speed = position.coords.speed;
-
-    document.getElementById("status").innerHTML = "🟢 Live Location Active & Synced";
-    document.getElementById("tracking").innerHTML = `🟢 Accuracy: ±${Math.round(accuracy)}m`;
-    document.getElementById("openMapBtn").style.display = "block";
-
-    let resolvedAddress = `Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}`;
-
-    try {
-        const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${currentLat}&lon=${currentLon}`);
-        const data = await geoRes.json();
-
-        const place =
-            data.address.suburb ||
-            data.address.city ||
-            data.address.town ||
-            data.address.village ||
-            "Current Area";
-
-        const state = data.address.state || "";
-        resolvedAddress = `${place}, ${state}`;
-
-        document.getElementById("area").innerHTML = `📍 <strong>${place}</strong><br><small style="color:#666;">${state} (${currentLat.toFixed(4)}, ${currentLon.toFixed(4)})</small>`;
-    } catch (e) {
-        document.getElementById("area").innerHTML = `📍 Coordinates: ${currentLat.toFixed(4)}, ${currentLon.toFixed(4)}`;
-    }
-
-    // Sync to backend location tracking API
-    try {
-        await locationAPI.update(currentLat, currentLon, accuracy, speed, resolvedAddress, 'SAFE');
-        showToast("📍 Location synced with SheSafe cloud!", "success");
-    } catch (apiErr) {
-        console.warn("Backend location sync:", apiErr.message);
-    }
-}
-
-function showError(error) {
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("trackBtn").disabled = false;
-
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            document.getElementById("status").innerHTML = "❌ Location permission denied.";
-            showToast("Please allow location access in your browser.", "warning");
-            break;
-        case error.POSITION_UNAVAILABLE:
-            document.getElementById("status").innerHTML = "❌ Location unavailable.";
-            break;
-        case error.TIMEOUT:
-            document.getElementById("status").innerHTML = "❌ Location request timed out.";
-            break;
-        default:
-            document.getElementById("status").innerHTML = "❌ Location error occurred.";
-    }
-}
-
-function openInGoogleMaps() {
-    if (currentLat && currentLon) {
-        window.open(`https://www.google.com/maps?q=${currentLat},${currentLon}`, '_blank');
-    }
-}
-</script>
-
+        function openInGoogleMaps() {
+            if (currentLat && currentLon) { window.open(`https://www.google.com/maps?q=${currentLat},${currentLon}`, '_blank'); }
+        }
+    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

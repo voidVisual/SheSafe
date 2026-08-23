@@ -5,156 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nearby Police & Helplines - SheSafe</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .helpline-card {
-            background: #f8f9fa;
-            padding: 14px;
-            border-radius: 12px;
-            margin: 10px 0;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid #D32F2F;
-        }
-        .helpline-info h4 {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 2px;
-        }
-        .helpline-info p {
-            font-size: 12px;
-            color: #666;
-            margin: 0;
-        }
-        .call-now-btn {
-            background: #D32F2F;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
-        .call-now-btn:hover {
-            background: #B71C1C;
-        }
-    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
-
-<div class="home-container">
-
-    <h2>🚔 Nearby Police & Helplines</h2>
-
-    <p style="margin:15px 0 20px 0; color:#555; font-size: 13px;">
-        Find the nearest police stations and access verified 24x7 emergency helplines.
-    </p>
-
-    <button class="ai-btn" onclick="openNearbyPolice()">
-        📍 Find Nearest Police Stations on Map
-    </button>
-
-    <h3 style="margin: 20px 0 10px 0; text-align: left; font-size: 16px;">🚨 Verified Helplines</h3>
-
-    <div id="helplinesContainer">
-        <!-- Loaded dynamically from API -->
-        <div class="helpline-card">
-            <div class="helpline-info">
-                <h4>National Emergency</h4>
-                <p>Universal Police/Ambulance (112)</p>
-            </div>
-            <a href="tel:112" class="call-now-btn">📞 112</a>
+    <main class="app-container">
+        <div class="page-header justify-between">
+            <h1 class="page-title flex items-center gap-2"><i data-lucide="shield"></i> Police & Helplines</h1>
+            <button class="icon-btn" onclick="window.location.href='home.html'"><i data-lucide="x" style="width:20px;height:20px;"></i></button>
         </div>
-        <div class="helpline-card" style="border-left-color: #7B1FA2;">
-            <div class="helpline-info">
-                <h4>Women Helpline</h4>
-                <p>24x7 Women Distress (1091)</p>
-            </div>
-            <a href="tel:1091" class="call-now-btn" style="background: #7B1FA2;">📞 1091</a>
-        </div>
-        <div class="helpline-card" style="border-left-color: #0288D1;">
-            <div class="helpline-info">
-                <h4>Women Domestic Abuse</h4>
-                <p>NCW Toll-Free (181)</p>
-            </div>
-            <a href="tel:181" class="call-now-btn" style="background: #0288D1;">📞 181</a>
-        </div>
-        <div class="helpline-card" style="border-left-color: #388E3C;">
-            <div class="helpline-info">
-                <h4>Cyber Crime Helpline</h4>
-                <p>Online harassment (1930)</p>
-            </div>
-            <a href="tel:1930" class="call-now-btn" style="background: #388E3C;">📞 1930</a>
-        </div>
-    </div>
 
-    <br>
+        <div class="p-6">
+            <p class="text-sm text-muted mb-6">
+                Find the nearest police stations and access verified 24x7 emergency helplines.
+            </p>
 
-    <button class="back-btn" onclick="window.location.href='home.html'">
-        ⬅ Back Home
-    </button>
+            <button class="btn btn-primary mb-6 flex items-center justify-center gap-2" onclick="openNearbyPolice()">
+                <i data-lucide="map-pin" style="width: 18px; height: 18px;"></i> Find Nearest Police Stations
+            </button>
 
-</div>
+            <h3 class="text-sm text-muted uppercase tracking-wide mb-4">Verified Helplines</h3>
 
-<script src="api.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-    try {
-        const data = await policeAPI.getHelplines();
-        if (data.success && data.helplines) {
-            renderHelplines(data.helplines);
-        }
-    } catch (e) {
-        console.log("Using static helplines list");
-    }
-});
-
-function renderHelplines(helplines) {
-    const container = document.getElementById("helplinesContainer");
-    const colors = ['#D32F2F', '#7B1FA2', '#0288D1', '#388E3C', '#E65100', '#C2185B'];
-
-    container.innerHTML = helplines.map((h, i) => {
-        const color = colors[i % colors.length];
-        return `
-            <div class="helpline-card" style="border-left-color: ${color};">
-                <div class="helpline-info">
-                    <h4>${h.name}</h4>
-                    <p>${h.description}</p>
+            <div id="helplinesContainer">
+                <!-- Loaded dynamically from API -->
+                <div class="list-item" style="border-left: 4px solid var(--danger);">
+                    <div class="list-item-content">
+                        <h3>National Emergency</h3>
+                        <p>Universal Police/Ambulance</p>
+                    </div>
+                    <a href="tel:112" class="btn btn-danger" style="width: auto; padding: 8px 16px;">112</a>
                 </div>
-                <a href="tel:${h.number}" class="call-now-btn" style="background: ${color};">
-                    📞 ${h.number}
-                </a>
+                
+                <div class="list-item" style="border-left: 4px solid #7B1FA2;">
+                    <div class="list-item-content">
+                        <h3>Women Helpline</h3>
+                        <p>24x7 Women Distress</p>
+                    </div>
+                    <a href="tel:1091" class="btn btn-primary" style="background: #7B1FA2; width: auto; padding: 8px 16px;">1091</a>
+                </div>
+                
+                <div class="list-item" style="border-left: 4px solid #0288D1;">
+                    <div class="list-item-content">
+                        <h3>Domestic Abuse</h3>
+                        <p>NCW Toll-Free</p>
+                    </div>
+                    <a href="tel:181" class="btn btn-primary" style="background: #0288D1; width: auto; padding: 8px 16px;">181</a>
+                </div>
+                
+                <div class="list-item" style="border-left: 4px solid #388E3C;">
+                    <div class="list-item-content">
+                        <h3>Cyber Crime</h3>
+                        <p>Online harassment</p>
+                    </div>
+                    <a href="tel:1930" class="btn btn-primary" style="background: #388E3C; width: auto; padding: 8px 16px;">1930</a>
+                </div>
             </div>
-        `;
-    }).join('');
-}
+        </div>
+    </main>
 
-function openNearbyPolice(){
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(
-            function(position){
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                window.open(
-                    `https://www.google.com/maps/search/police+station/@${lat},${lon},15z`,
-                    "_blank"
+    <script src="api.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const data = await policeAPI.getHelplines();
+                if (data.success && data.helplines) { renderHelplines(data.helplines); }
+            } catch (e) { console.log("Using static helplines list"); }
+        });
+
+        function renderHelplines(helplines) {
+            const container = document.getElementById("helplinesContainer");
+            const colors = ['var(--danger)', '#7B1FA2', '#0288D1', '#388E3C', '#E65100', '#C2185B'];
+
+            container.innerHTML = helplines.map((h, i) => {
+                const color = colors[i % colors.length];
+                return `
+                    <div class="list-item" style="border-left: 4px solid ${color};">
+                        <div class="list-item-content">
+                            <h3 style="margin-bottom: 2px;">${escapeHtml(h.name)}</h3>
+                            <p>${escapeHtml(h.description)}</p>
+                        </div>
+                        <a href="tel:${h.number}" class="btn btn-primary flex items-center justify-center gap-2" style="background: ${color}; width: auto; padding: 8px 16px; border-color: ${color};">
+                            <i data-lucide="phone" style="width: 16px; height: 16px;"></i> ${escapeHtml(h.number)}
+                        </a>
+                    </div>
+                `;
+            }).join('');
+            setTimeout(() => { lucide.createIcons(); }, 0);
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function openNearbyPolice(){
+            if(navigator.geolocation){
+                navigator.geolocation.getCurrentPosition(
+                    function(position){
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        window.open(`https://www.google.com/maps/search/police+station/@${lat},${lon},15z`, "_blank");
+                    },
+                    function(){ window.open("https://www.google.com/maps/search/police+station+near+me", "_blank"); }
                 );
-            },
-            function(){
-                window.open("https://www.google.com/maps/search/police+station+near+me", "_blank");
-            }
-        );
-    } else {
-        window.open("https://www.google.com/maps/search/police+station+near+me", "_blank");
-    }
-}
-</script>
-
+            } else { window.open("https://www.google.com/maps/search/police+station+near+me", "_blank"); }
+        }
+    </script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
