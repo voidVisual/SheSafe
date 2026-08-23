@@ -96,9 +96,12 @@ body {
 .mt-4 { margin-top: 16px; }
 .w-full { width: 100%; }
 .flex { display: flex; }
+.flex-col { flex-direction: column; }
 .items-center { align-items: center; }
+.items-start { align-items: flex-start; }
 .justify-between { justify-content: space-between; }
 .gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
 .gap-4 { gap: 16px; }
 
 /* Headers & Typography */
