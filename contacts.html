@@ -27,44 +27,43 @@
                 <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Add New Contact
             </button>
         </div>
-    </main>
+        <!-- Modal for Adding New Contact -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <h3 class="mb-4">Add Emergency Contact</h3>
+                <div class="input-group mb-2">
+                    <input type="text" id="newContactName" class="input-control" placeholder="Full Name (e.g. Mom, Sarah)" required>
+                </div>
+                <div class="input-group mb-2">
+                    <input type="tel" id="newContactPhone" class="input-control" placeholder="Phone Number (+91 ...)" required>
+                </div>
+                <div class="input-group mb-2">
+                    <select id="newContactRelation" class="input-control">
+                        <option value="Mother">Mother</option>
+                        <option value="Father">Father</option>
+                        <option value="Sister">Sister</option>
+                        <option value="Brother">Brother</option>
+                        <option value="Friend">Friend</option>
+                        <option value="Guardian">Guardian</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group mb-4">
+                    <input type="email" id="newContactEmail" class="input-control" placeholder="Email Address (Optional)">
+                </div>
+                
+                <label class="flex items-center gap-2 mb-6 text-sm">
+                    <input type="checkbox" id="newContactPrimary"> 
+                    <span class="text-muted">Set as primary emergency contact</span>
+                </label>
 
-    <!-- Modal for Adding New Contact -->
-    <div id="addModal" class="modal">
-        <div class="modal-content">
-            <h3 class="mb-4">Add Emergency Contact</h3>
-            <div class="input-group mb-2">
-                <input type="text" id="newContactName" class="input-control" placeholder="Full Name (e.g. Mom, Sarah)" required>
-            </div>
-            <div class="input-group mb-2">
-                <input type="tel" id="newContactPhone" class="input-control" placeholder="Phone Number (+91 ...)" required>
-            </div>
-            <div class="input-group mb-2">
-                <select id="newContactRelation" class="input-control">
-                    <option value="Mother">Mother</option>
-                    <option value="Father">Father</option>
-                    <option value="Sister">Sister</option>
-                    <option value="Brother">Brother</option>
-                    <option value="Friend">Friend</option>
-                    <option value="Guardian">Guardian</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <div class="input-group mb-4">
-                <input type="email" id="newContactEmail" class="input-control" placeholder="Email Address (Optional)">
-            </div>
-            
-            <label class="flex items-center gap-2 mb-6 text-sm">
-                <input type="checkbox" id="newContactPrimary"> 
-                <span class="text-muted">Set as primary emergency contact</span>
-            </label>
-
-            <div class="flex gap-4">
-                <button class="btn btn-outline flex-1" onclick="closeAddModal()">Cancel</button>
-                <button class="btn btn-primary flex-1" id="saveContactBtn" onclick="saveNewContact()">Save</button>
+                <div class="flex gap-4">
+                    <button class="btn btn-outline flex-1" onclick="closeAddModal()">Cancel</button>
+                    <button class="btn btn-primary flex-1" id="saveContactBtn" onclick="saveNewContact()">Save</button>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script src="api.js"></script>
     <script>
