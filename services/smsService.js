@@ -2,14 +2,13 @@ const twilio = require('twilio');
 
 // Initialize Twilio client if keys are present
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const apiKey = process.env.TWILIO_API_KEY;
-const apiSecret = process.env.TWILIO_API_SECRET;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
 
 let client = null;
-if (accountSid && apiKey && apiSecret) {
+if (accountSid && authToken) {
   try {
-    client = twilio(apiKey, apiSecret, { accountSid });
+    client = twilio(accountSid, authToken);
   } catch (error) {
     console.error("Failed to initialize Twilio client:", error.message);
   }
@@ -31,8 +30,11 @@ const sendEmergencySMS = async (toPhone, messageBody) => {
   }
 
   try {
+    // Note: Free Twilio trial accounts in certain regions (like India) restrict custom SMS bodies.
+    // We send a predefined template to bypass this restriction during development/testing.
+    // Once upgraded to a paid account, change this back to: body: messageBody
     const message = await client.messages.create({
-      body: messageBody,
+      body: 'sms_appointment_reminders', 
       from: twilioPhone,
       to: toPhone
     });
