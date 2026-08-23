@@ -30,11 +30,8 @@ const sendEmergencySMS = async (toPhone, messageBody) => {
   }
 
   try {
-    // Note: Free Twilio trial accounts in certain regions (like India) restrict custom SMS bodies.
-    // We send a predefined template to bypass this restriction during development/testing.
-    // Once upgraded to a paid account, change this back to: body: messageBody
     const message = await client.messages.create({
-      body: 'sms_appointment_reminders', 
+      body: messageBody, 
       from: twilioPhone,
       to: toPhone
     });

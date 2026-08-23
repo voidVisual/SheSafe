@@ -41,11 +41,11 @@ const triggerSOS = async (req, res, next) => {
     }
 
     // Format emergency message
-    const emergencyMsgText = `🚨 EMERGENCY ALERT FROM ${user.name.toUpperCase()}!\n` +
-      `I am in an emergency situation and need immediate help.\n` +
+    const emergencyMsgText = `🚨 URGENT: EMERGENCY SOS ALERT 🚨\n\n` +
+      `${user.name.toUpperCase()} is in DANGER and has triggered an SOS alarm from the SheSafe app. She needs your immediate help.\n\n` +
       `📍 Location: ${resolvedAddress}\n` +
-      (mapUrl ? `🗺️ View Map: ${mapUrl}\n` : '') +
-      (batteryLevel ? `🔋 Battery: ${batteryLevel}%\n` : '') +
+      (mapUrl ? `🗺️ Google Maps: ${mapUrl}\n` : '') +
+      (batteryLevel ? `🔋 Phone Battery: ${batteryLevel}%\n` : '') +
       `⏰ Time: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}`;
 
     console.log(`\n🚨 ================= [SOS TRIGGERED] ================= 🚨`);
