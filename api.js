@@ -4,20 +4,7 @@
  * graceful offline demo fallbacks when the Express server is starting or offline.
  */
 
-// Dynamically determine the backend API base URL
-function resolveApiBase() {
-  if (typeof window === 'undefined') return 'http://localhost:5000';
-  
-  // If served directly via file:// protocol or Live Server (e.g. port 5500, 3000, 8080)
-  if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5000')) {
-    return 'http://localhost:5000';
-  }
-  // Same-origin if served by Express on port 5000
-  return '';
-}
-
-const API_BASE = resolveApiBase();
-
+const API_BASE = 'https://shesafe-production-0ffc.up.railway.app';
 // Storage helper for session tokens, active user, and offline mock persistence
 const TokenStorage = {
   getToken: () => localStorage.getItem('shesafe_token'),
@@ -51,9 +38,9 @@ const DEMO_USER = {
 };
 
 const DEFAULT_OFFLINE_CONTACTS = [
-  { id: 1, name: 'Mom', phone: '+91 9775800554', relationship: 'Mother', is_primary: 1 },
+  { id: 1, name: 'Mom', phone: '+91 9775800553', relationship: 'Mother', is_primary: 1 },
   { id: 2, name: 'Dad', phone: '+91 9475265165', relationship: 'Father', is_primary: 0 },
-  { id: 3, name: 'Brother', phone: '+91 9748748772', relationship: 'Brother', is_primary: 0 }
+  { id: 3, name: 'Brother', phone: '+91 9339812082', relationship: 'Brother', is_primary: 0 }
 ];
 
 const DEFAULT_HELPLINES = [

@@ -3,146 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SheSafe</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Login | SheSafe</title>
+
+    <link rel="stylesheet" href="./style.css">
 </head>
-<body>
 
-<div class="signup-container">
-    <div class="logo" style="text-align: center; margin-bottom: 10px;">🛡️</div>
-    <h1>Welcome Back</h1>
-    <p>Sign in to access your SheSafe protection.</p>
+<body class="auth-page">
 
-    <!-- Server Status Indicator -->
-    <div style="text-align: center;">
-        <span id="serverStatusPill" class="server-status-pill">
-            <span id="statusDot">🟢</span> <span id="statusText">Checking Backend Server...</span>
-        </span>
-    </div>
+    <main class="auth-container">
 
-    <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="loginEmail" placeholder="Email or Phone Number" value="ushashi@shesafe.app" required>
-        <input type="password" id="loginPassword" placeholder="Password" value="password123" required>
-        <button type="submit" id="loginBtn">Log In</button>
-    </form>
+        <!-- Logo -->
+        <div class="brand">
+            <div class="brand-logo">🛡️</div>
+            <h1>SheSafe</h1>
+            <p>Your Safety, Our Priority</p>
+        </div>
 
-    <div class="credentials-hint">
-        💡 <strong>Demo Credentials:</strong><br>
-        Email: <code>ushashi@shesafe.app</code><br>
-        Password: <code>password123</code>
-    </div>
+        <!-- Login Card -->
+        <section class="auth-card">
 
-    <h3>──────── OR ────────</h3>
+            <h2>Welcome Back 👋</h2>
+            <p class="auth-subtitle">
+                Sign in to stay protected and connected.
+            </p>
 
-    <button class="google" type="button" id="quickDemoBtn" onclick="quickDemoLogin()">
-        ⚡ Quick Demo Login (Instant)
-    </button>
+            <!-- Backend status -->
+            <div id="serverStatusPill" class="server-status-pill">
+                <span id="statusDot">🟢</span>
+                <span id="statusText">Checking connection...</span>
+            </div>
 
-    <p style="margin-top: 25px;">
-        Don't have an account?
-        <a href="signup.html">Create Account</a>
-    </p>
-</div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
 
-<script src="api.js"></script>
-<script>
-// If already logged in, redirect to home
-if (TokenStorage.getToken()) {
-    window.location.href = 'home.html';
-}
+                <label for="loginEmail">Email or phone</label>
+                <input
+                    type="text"
+                    id="loginEmail"
+                    placeholder="Enter your email or phone"
+                    required
+                >
 
-// Live Server Health Check on page load
-document.addEventListener('DOMContentLoaded', async () => {
-    checkServer();
-});
+                <label for="loginPassword">Password</label>
 
-async function checkServer() {
-    const pill = document.getElementById('serverStatusPill');
-    const dot = document.getElementById('statusDot');
-    const txt = document.getElementById('statusText');
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="Enter your password"
+                        
+                        required
+                    >
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="togglePassword()"
+                    >
+                        👁
+                    </button>
+                </div>
 
-    try {
-        const health = await authAPI.checkServerHealth();
-        if (health.online) {
-            pill.className = 'server-status-pill';
-            dot.innerText = '🟢';
-            txt.innerText = 'Backend Online (Port 5000)';
-        } else {
-            pill.className = 'server-status-pill offline';
-            dot.innerText = '⚠️';
-            txt.innerText = 'Server Offline (Demo Mode Available)';
+                <div class="login-options">
+                    <label class="remember">
+                        <input type="checkbox">
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="#">Forgot password?</a>
+                </div>
+
+                <button type="submit" id="loginBtn" class="primary-btn">
+                    Log In
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <button
+                type="button"
+                id="quickDemoBtn"
+                class="demo-btn"
+                onclick="quickDemoLogin()"
+            >
+                ⚡ Try Demo Login
+            </button>
+
+            <p class="signup-text">
+                Don't have an account?
+                <a href="signup.html">Create an account</a>
+            </p>
+
+        </section>
+
+        <p class="privacy-note">
+            🔒 Your information is protected and kept private.
+        </p>
+
+    </main>
+
+    <script src="./api.js"></script>
+
+    <script>
+
+        /* Already logged in */
+        if (TokenStorage.getToken()) {
+            window.location.href = 'home.html';
         }
-    } catch {
-        pill.className = 'server-status-pill offline';
-        dot.innerText = '⚠️';
-        txt.innerText = 'Server Offline (Demo Mode Available)';
-    }
-}
 
-async function handleLogin(e) {
-    e.preventDefault();
-    const emailOrPhone = document.getElementById('loginEmail').value.trim();
+        /* Backend status */
+        document.addEventListener('DOMContentLoaded', () => {
+            checkServer();
+        });
+
+        async function checkServer() {
+
+            const pill = document.getElementById('serverStatusPill');
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+
+            try {
+
+                const health = await authAPI.checkServerHealth();
+
+                if (health.online) {
+
+                    pill.className = 'server-status-pill online';
+                    dot.innerText = '🟢';
+                    txt.innerText = 'Secure connection';
+
+                } else {
+
+                    pill.className = 'server-status-pill offline';
+                    dot.innerText = '⚠️';
+                    txt.innerText = 'Demo mode available';
+
+                }
+
+            } catch {
+
+                pill.className = 'server-status-pill offline';
+                dot.innerText = '⚠️';
+                txt.innerText = 'Demo mode available';
+
+            }
+        }
+
+        /* Login */
+        async function handleLogin(e) {
+
+            e.preventDefault();
+
+            const emailOrPhone =
+                document.getElementById('loginEmail').value.trim();
+
+            const password =
+                document.getElementById('loginPassword').value;
+
+            const btn =
+                document.getElementById('loginBtn');
+
+            if (!emailOrPhone || !password) {
+                showToast(
+                    'Please enter your email and password.',
+                    'warning'
+                );
+                return;
+            }
+
+            try {
+
+                btn.disabled = true;
+                btn.innerText = 'Signing in...';
+
+                const data =
+                    await authAPI.login(emailOrPhone, password);
+
+                const name =
+                    data.user?.name || 'User';
+
+                if (data.offline) {
+
+                    showToast(
+                        `Welcome, ${name}! Demo mode.`,
+                        'info'
+                    );
+
+                } else {
+
+                    showToast(
+                        `Welcome back, ${name}!`,
+                        'success'
+                    );
+
+                }
+
+                setTimeout(() => {
+                    window.location.href = 'home.html';
+                }, 800);
+
+            } catch (err) {
+
+                showToast(
+                    err.message ||
+                    'Login failed. Please check your credentials.',
+                    'error'
+                );
+
+            } finally {
+
+                btn.disabled = false;
+                btn.innerText = 'Log In';
+
+            }
+        }
+
+        /* Demo login */
+         async function quickDemoLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    const btn = document.getElementById('loginBtn');
 
-    if (!emailOrPhone || !password) {
+    if (!email || !password) {
         showToast('Please enter your email and password.', 'warning');
         return;
     }
 
-    try {
-        btn.disabled = true;
-        btn.innerText = 'Logging in...';
-
-        const data = await authAPI.login(emailOrPhone, password);
-        const name = data.user?.name || 'User';
-        
-        if (data.offline) {
-            showToast(`Welcome, ${name}! (Offline Demo Mode)`, 'info');
-        } else {
-            showToast(`Welcome back, ${name}!`, 'success');
-        }
-
-        setTimeout(() => {
-            window.location.href = 'home.html';
-        }, 800);
-    } catch (err) {
-        showToast(err.message || 'Login failed. Please check your credentials.', 'error');
-    } finally {
-        btn.disabled = false;
-        btn.innerText = 'Log In';
-    }
-}
-
-async function quickDemoLogin() {
     const btn = document.getElementById('quickDemoBtn');
+
     try {
         btn.disabled = true;
-        btn.innerText = 'Logging in as Demo User...';
-        
-        document.getElementById('loginEmail').value = 'ushashi@shesafe.app';
-        document.getElementById('loginPassword').value = 'password123';
+        btn.innerText = 'Signing in...';
 
-        const data = await authAPI.login('ushashi@shesafe.app', 'password123');
-        const name = data.user?.name || 'Ushashi';
-        
-        if (data.offline) {
-            showToast(`Logged in as ${name}! (Demo Mode)`, 'info');
-        } else {
-            showToast(`Logged in as ${name}!`, 'success');
-        }
+        const data = await authAPI.login(email, password);
+
+        const name = data.user?.name || 'User';
+
+        showToast(`Welcome, ${name}!`, 'success');
 
         setTimeout(() => {
             window.location.href = 'home.html';
         }, 600);
+
     } catch (err) {
-        showToast('Demo login notice: ' + err.message, 'warning');
+        showToast(
+            err.message || 'Login failed.',
+            'error'
+        );
     } finally {
         btn.disabled = false;
-        btn.innerText = '⚡ Quick Demo Login (Instant)';
+        btn.innerText = '⚡ Try Demo Login';
     }
 }
-</script>
+
+        /* Show/hide password */
+        function togglePassword() {
+
+            const input =
+                document.getElementById('loginPassword');
+
+            input.type =
+                input.type === 'password'
+                    ? 'text'
+                    : 'password';
+        }
+
+    </script>
 
 </body>
 </html>
