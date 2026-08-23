@@ -1,4 +1,5 @@
 const { get, all, run } = require('../database/db');
+const { sendEmergencySMS } = require('../services/smsService');
 
 /**
  * Trigger an SOS emergency alert
@@ -47,23 +48,31 @@ const triggerSOS = async (req, res, next) => {
       (batteryLevel ? `🔋 Battery: ${batteryLevel}%\n` : '') +
       `⏰ Time: ${new Date().toLocaleTimeString()} ${new Date().toLocaleDateString()}`;
 
-    // Simulate / execute notification dispatch to contacts
-    const dispatchResults = contacts.map(c => ({
-      contactId: c.id,
-      name: c.name,
-      phone: c.phone,
-      relationship: c.relationship,
-      status: 'SENT',
-      channel: 'SMS/PUSH',
-      dispatchedAt: new Date().toISOString()
-    }));
-
     console.log(`\n🚨 ================= [SOS TRIGGERED] ================= 🚨`);
     console.log(`User: ${user.name} (${user.phone})`);
     console.log(`Location: ${resolvedAddress}`);
     console.log(`Map: ${mapUrl}`);
     console.log(`Alerting ${contacts.length} Emergency Contacts:`);
-    contacts.forEach(c => console.log(` - 📲 Sent SMS to ${c.name} (${c.phone})`));
+
+    // Dispatch SMS to all contacts using Twilio Service
+    const dispatchResults = await Promise.all(contacts.map(async (c) => {
+      console.log(` - 📲 Sending SMS to ${c.name} (${c.phone})...`);
+      const smsResult = await sendEmergencySMS(c.phone, emergencyMsgText);
+      
+      return {
+        contactId: c.id,
+        name: c.name,
+        phone: c.phone,
+        relationship: c.relationship,
+        status: smsResult.success ? 'SENT' : 'FAILED',
+        error: smsResult.error || null,
+        simulated: smsResult.simulated || false,
+        messageId: smsResult.messageId || null,
+        channel: 'SMS',
+        dispatchedAt: new Date().toISOString()
+      };
+    }));
+
     console.log(`========================================================\n`);
 
     return res.status(201).json({
