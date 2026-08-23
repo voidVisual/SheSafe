@@ -35,6 +35,21 @@
     font-family: 'Inter', sans-serif;
 }
 
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(236, 72, 153, 0.2);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(236, 72, 153, 0.4);
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
@@ -62,9 +77,12 @@ body {
     .app-container, .auth-container, .home-container, .map-container {
         min-height: 800px;
         height: 90vh;
-        border-radius: var(--radius-lg);
+        border-radius: 40px;
         margin: 20px 0;
         overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(236, 72, 153, 0.25);
+        border: 8px solid rgba(255, 255, 255, 0.6);
+        background: var(--card-bg);
     }
 }
 
@@ -119,10 +137,11 @@ h1, h2, h3, h4 { color: var(--text-main); font-weight: 600; }
 }
 .btn-danger:hover { background: var(--danger); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3); }
 .btn-success {
-    background-color: var(--success);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
-.btn-success:hover { background-color: #059669; transform: translateY(-1px); }
+.btn-success:hover { background: linear-gradient(135deg, #059669 0%, #047857 100%); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3); }
 .btn-outline {
     background-color: transparent;
     border: 1px solid var(--border);
@@ -231,19 +250,25 @@ select.input-control {
     padding: 24px 24px 16px 24px;
 }
 .profile-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: var(--bg-color);
-    border: 1px solid var(--border);
+    background: linear-gradient(135deg, #fdf2f8 0%, #fbcfe8 100%);
+    border: 1px solid #f9a8d4;
+    color: var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 20px;
-    transition: transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(236, 72, 153, 0.15);
 }
-.profile-btn:hover { transform: scale(1.05); }
+.profile-btn:hover { 
+    transform: translateY(-2px) scale(1.05); 
+    box-shadow: 0 6px 14px rgba(236, 72, 153, 0.25);
+    background: linear-gradient(135deg, #fce7f3 0%, #f9a8d4 100%);
+}
 
 /* Cards */
 .card {
@@ -259,14 +284,15 @@ select.input-control {
 /* Status Banner */
 .status-banner {
     margin: 0 24px 16px 24px;
-    padding: 16px;
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     color: #065f46;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.05);
 }
 .status-banner .status-icon {
     font-size: 24px;
@@ -280,12 +306,13 @@ select.input-control {
 .active-sos-banner {
     display: none;
     margin: 0 24px 16px 24px;
-    padding: 16px;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: var(--radius-md);
+    padding: 20px;
+    background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+    border: 1px solid #fecdd3;
+    border-radius: 24px;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.1), 0 8px 10px -6px rgba(225, 29, 72, 0.1);
 }
 .active-sos-banner.show { display: flex; }
 
@@ -406,9 +433,14 @@ select.input-control {
     margin-top: auto;
     display: flex;
     justify-content: space-around;
-    padding: 12px 0 20px 0;
-    background: white;
-    border-top: 1px solid var(--border);
+    padding: 16px 8px 24px 8px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(252, 231, 243, 0.6);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
 }
 .nav-item {
     display: flex;
